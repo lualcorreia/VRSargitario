@@ -1,0 +1,94 @@
+<style>
+/* Fundo escurão apenas dentro do mapa */
+.vrsMap, .leaflet-container {
+    background-color: #121313 !important;
+}
+
+/* Remove botões civis desnecessários na tela de radar */
+.leaflet-control-attribution, .leaflet-control-zoom, .vrsMenu {
+    opacity: 0.2;
+    transition: opacity 0.3s;
+}
+.leaflet-control-attribution:hover, .leaflet-control-zoom:hover, .vrsMenu:hover {
+    opacity: 1.0;
+}
+
+/* TRAVA DE ÁREA (.leaflet-container): Estiliza APENAS as etiquetas dos aviões no mapa! */
+.leaflet-container .vrsMarkerLabel,
+.leaflet-container .vrs-marker-label,
+.leaflet-container .markerLabel,
+.leaflet-container .marker-label,
+.leaflet-container [class*="MarkerLabel"],
+.leaflet-container [class*="markerLabel"],
+.leaflet-container [class*="marker-label"],
+.leaflet-container .leaflet-tooltip:not(.sagitario-label-transparente),
+.leaflet-marker-pane span,
+.leaflet-marker-pane > div > div {
+    background: rgba(0, 0, 0, 0.75) !important;
+    border: 1px solid rgba(0, 255, 102, 0.4) !important;
+    border-radius: 0px !important;
+    color: #00ff66 !important;
+    font-family: 'Consolas', 'Courier New', monospace !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    padding: 2px 4px !important;
+    text-shadow: 1px 1px 1px #000 !important;
+    box-shadow: none !important;
+}
+
+/* Aeronave selecionada no mapa fica em ciano brilhante */
+.leaflet-container .vrsMarkerLabelSelected,
+.leaflet-container .vrs-marker-label-selected,
+.leaflet-container .markerLabelSelected {
+    color: #00ffff !important;
+    border-color: #00ffff !important;
+    background: rgba(0, 25, 25, 0.9) !important;
+}
+
+/* ESTILO DO MENU DE CAMADAS GERAIS NO CANTO DO MAPA */
+.leaflet-control-layers {
+    background: rgba(18, 19, 19, 0.95) !important;
+    border: 1px solid #00ff66 !important;
+    color: #00ff66 !important;
+    font-family: 'Consolas', 'Courier New', monospace !important;
+    font-size: 12px !important;
+    border-radius: 2px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8) !important;
+    padding: 6px !important;
+}
+.leaflet-control-layers label {
+    color: #cccccc !important;
+    margin-bottom: 4px !important;
+    cursor: pointer;
+    display: block !important;
+}
+.leaflet-control-layers label:hover {
+    color: #00ffff !important;
+}
+
+/* REMOVE O FUNDO BRANCO E AS SETAS PADRÃO DO LEAFLET PARA AS ETIQUETAS HUD DO RADAR */
+.leaflet-container .sagitario-label-transparente {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.leaflet-container .sagitario-label-transparente::before,
+.leaflet-container .sagitario-label-transparente::after {
+    display: none !important;
+}
+
+/* BARRA DE ROLAGEM CUSTOMIZADA ESTILO TERMINAL PARA A LISTA DE PROCEDIMENTOS */
+#lista-procedimentos-sagitario::-webkit-scrollbar {
+    width: 6px;
+}
+#lista-procedimentos-sagitario::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.8);
+}
+#lista-procedimentos-sagitario::-webkit-scrollbar-thumb {
+    background: #00ff66;
+    border-radius: 2px;
+}
+</style>
