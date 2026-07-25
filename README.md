@@ -21,6 +21,8 @@ Responsável pelo visual tático, cores de alto contraste, menus limpos e format
 * **Endereço:** `*` *(o asterisco aplica a modificação em todas as páginas do mapa)*
 * **Ativado:** Marque a caixa (`Sim`)
 <img width="673" height="526" alt="image" src="https://github.com/user-attachments/assets/3dbe93f9-a153-4eca-bd81-cd5d021071cc" />
+
+
 **B. Banco de Dados do Setor (`setores_sct.js`)**
 Arquivo que armazena as coordenadas do espaço aéreo, aerovias, fixos e procedimentos em uma variável JavaScript global (`TEXTO_SCT`), permitindo a leitura instantânea pelo navegador.
 
@@ -30,6 +32,8 @@ Arquivo que armazena as coordenadas do espaço aéreo, aerovias, fixos e procedi
 * **Endereço:** `*`
 * **Ativado:** Marque a caixa (`Sim`)
 <img width="672" height="527" alt="image" src="https://github.com/user-attachments/assets/c5412a49-cb8f-4f1b-aff1-19f4b9d40c02" />
+
+
 **C. Motor Operacional (`sagitario.js`)**
 Script principal que executa a renderização acelerada por GPU (`L.canvas`), o roteamento blindado de camadas civis e militares, o painel terminal ATC e a inteligência de zoom (LOD).
 
