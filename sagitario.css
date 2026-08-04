@@ -91,4 +91,9 @@
     background: #00ff66;
     border-radius: 2px;
 }
+
+/* CORREÇÃO DE CAMADAS: Rebaixa os tooltips do mapa modificado para ficarem abaixo das aeronaves (Leaflet default para markers é 600) */
+.leaflet-tooltip-pane {
+    z-index: 450 !important;
+}
 </style>
