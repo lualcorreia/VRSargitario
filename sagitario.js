@@ -1,5 +1,103 @@
+<style>
+.vrsMap, .leaflet-container {
+    background-color: #121313 !important;
+}
+
+.leaflet-control-attribution, .leaflet-control-zoom, .vrsMenu {
+    opacity: 0.2;
+    transition: opacity 0.3s;
+}
+.leaflet-control-attribution:hover, .leaflet-control-zoom:hover, .vrsMenu:hover {
+    opacity: 1.0;
+}
+
+
+.leaflet-container .vrsMarkerLabel,
+.leaflet-container .vrs-marker-label,
+.leaflet-container .markerLabel,
+.leaflet-container .marker-label,
+.leaflet-container [class*="MarkerLabel"],
+.leaflet-container [class*="markerLabel"],
+.leaflet-container [class*="marker-label"],
+.leaflet-container .leaflet-tooltip:not(.sagitario-label-transparente),
+.leaflet-marker-pane span,
+.leaflet-marker-pane > div > div {
+    background: rgba(0, 0, 0, 0.75) !important;
+    border: 1px solid rgba(0, 255, 102, 0.4) !important;
+    border-radius: 0px !important;
+    color: #00ff66 !important;
+    font-family: 'Consolas', 'Courier New', monospace !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    padding: 2px 4px !important;
+    text-shadow: 1px 1px 1px #000 !important;
+    box-shadow: none !important;
+}
+
+
+.leaflet-container .vrsMarkerLabelSelected,
+.leaflet-container .vrs-marker-label-selected,
+.leaflet-container .markerLabelSelected {
+    color: #00ffff !important;
+    border-color: #00ffff !important;
+    background: rgba(0, 25, 25, 0.9) !important;
+}
+
+/* ESTILO DO MENU DE CAMADAS GERAIS NO CANTO DO MAPA */
+.leaflet-control-layers {
+    background: rgba(18, 19, 19, 0.95) !important;
+    border: 1px solid #00ff66 !important;
+    color: #00ff66 !important;
+    font-family: 'Consolas', 'Courier New', monospace !important;
+    font-size: 12px !important;
+    border-radius: 2px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8) !important;
+    padding: 6px !important;
+}
+.leaflet-control-layers label {
+    color: #cccccc !important;
+    margin-bottom: 4px !important;
+    cursor: pointer;
+    display: block !important;
+}
+.leaflet-control-layers label:hover {
+    color: #00ffff !important;
+}
+
+/* REMOVE O FUNDO BRANCO E AS SETAS PADRÃO DO LEAFLET PARA AS ETIQUETAS HUD DO RADAR */
+.leaflet-container .sagitario-label-transparente {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.leaflet-container .sagitario-label-transparente::before,
+.leaflet-container .sagitario-label-transparente::after {
+    display: none !important;
+}
+
+/* BARRA DE ROLAGEM CUSTOMIZADA ESTILO TERMINAL PARA A LISTA DE PROCEDIMENTOS */
+#lista-procedimentos-sagitario::-webkit-scrollbar {
+    width: 6px;
+}
+#lista-procedimentos-sagitario::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.8);
+}
+#lista-procedimentos-sagitario::-webkit-scrollbar-thumb {
+    background: #00ff66;
+    border-radius: 2px;
+}
+
+/* CORREÇÃO DE CAMADAS (Leaflet default para markers é 600) */
+.leaflet-tooltip-pane {
+    z-index: 450 !important;
+}
+</style>
+
 <script>
-// Arquivo: sagitario.js - Central Terminal ATC, Fixos Vetoriais e Roteamento Blindado de Aerovias / TMA / VFR
+// Arquivo: sagitario.js - Central Terminal ATC com Cores e Opacidade
 (function() {
     function sctParaDecimal(coordStr) {
         var match = coordStr.trim().match(/^([NSEW])\s*(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?/i);
@@ -428,6 +526,7 @@
                 var limitePlotagem = 0;
                 var textoPermanente = (zoomAtual >= 8);
 
+                // FIXOS: Adicionado ID para a ferramenta de cor substituí-lo
                 for (var f = 0; f < bancoFixos.length; f++) {
                     var fixo = bancoFixos[f];
                     if (bounds.contains([fixo.lat, fixo.lon])) {
@@ -450,7 +549,7 @@
 
                         var tri = L.polygon(pontosTriangulo, optsTri);
 
-                        var htmlFixo = '<span style="color: #e699ff; background: rgba(0, 0, 0, 0.45); padding: 1px 3px; border-radius: 2px; font-size: 9.5px; font-weight: bold; font-family: Consolas, monospace; white-space: nowrap; text-shadow: 1px 1px 1px #000, -1px -1px 1px #000;">' + fixo.nome + '</span>';
+                        var htmlFixo = '<span style="color: #b84dff; background: rgba(0, 0, 0, 0.45); padding: 1px 3px; border-radius: 2px; font-size: 9.5px; font-weight: bold; font-family: Consolas, monospace; white-space: nowrap; text-shadow: 1px 1px 1px #000, -1px -1px 1px #000;">' + fixo.nome + '</span>';
 
                         tri.bindTooltip(htmlFixo, {
                             permanent: textoPermanente,
@@ -474,16 +573,40 @@
             });
             atualizarFixosTela();
 
+            // Adição das funções de Opacidade e Cores no Painel Terminal
             var PainelTerminal = L.Control.extend({
                 options: { position: 'bottomleft' },
                 onAdd: function(map) {
                     var div = L.DomUtil.create('div', 'sagitario-painel-terminal');
                     div.innerHTML = `
-                        <div style="background: rgba(18, 19, 19, 0.95); border: 1px solid #00ff66; padding: 8px; border-radius: 3px; font-family: Consolas, monospace; color: #00ff66; width: 270px; box-shadow: 0 0 15px rgba(0,0,0,0.8);">
+                        <div id="painel-principal-sagitario" style="background: rgba(18, 19, 19, 0.95); border: 1px solid #00ff66; padding: 8px; border-radius: 3px; font-family: Consolas, monospace; color: #00ff66; width: 270px; box-shadow: 0 0 15px rgba(0,0,0,0.8);">
                             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #00ff66; padding-bottom: 5px; margin-bottom: 8px;">
-                                <span style="font-weight: bold; font-size: 11px; color: #00ffff;">✈️ TERMINAL ATC (SID / STAR)</span>
-                                <button id="btn-min-sagitario" style="background: none; border: 1px solid #00ff66; color: #00ff66; cursor: pointer; font-size: 10px; padding: 0px 5px; font-weight: bold;">_</button>
+                                <span style="font-weight: bold; font-size: 11px; color: #00ffff;">✈️ TERMINAL </span>
+                                <div>
+                                    <span id="btn-cfg-sagitario" style="color: #ff9900; cursor: pointer; font-size: 10px; margin-right: 8px; font-weight: bold; text-decoration: underline;">⚙️ CORES/OPACIDADE</span>
+                                    <button id="btn-min-sagitario" style="background: none; border: 1px solid #00ff66; color: #00ff66; cursor: pointer; font-size: 10px; padding: 0px 5px; font-weight: bold;" title="Minimizar">_</button>
+                                </div>
                             </div>
+
+                            <div id="cfg-painel-sagitario" style="display: none; padding-bottom: 8px; border-bottom: 1px dashed rgba(0,255,102,0.3); margin-bottom: 8px;">
+                                <label style="font-size: 10px; color: #ccc;">OPACIDADE DO MAPA:</label>
+                                <input type="range" id="sag-opacity" min="0.1" max="1" step="0.1" value="1" style="width: 100%; margin-bottom: 8px; cursor: pointer;">
+                                
+                                <label style="font-size: 10px; color: #ccc;">CORES DAS CAMADAS:</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10px; margin-top: 4px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">FIR/ACC: <input type="color" data-cor-atual="#4a7a96" value="#4a7a96" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">TMA/CTR: <input type="color" data-cor-atual="#00e5ff" value="#00e5ff" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">VFR (Rotas): <input type="color" data-cor-atual="#00ff66" value="#00ff66" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">SUA: <input type="color" data-cor-atual="#ff2e63" value="#ff2e63" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">AEROVIA SUP: <input type="color" data-cor-atual="#e0e0e0" value="#e0e0e0" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">AEROVIA INF: <input type="color" data-cor-atual="#ffaa00" value="#ffaa00" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">PISTAS: <input type="color" data-cor-atual="#ff0000" value="#ff0000" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">FIXOS: <input type="color" data-cor-atual="#b84dff" value="#b84dff" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">SIDs: <input type="color" data-cor-atual="#ffff00" value="#ffff00" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">STARs: <input type="color" data-cor-atual="#ff3399" value="#ff3399" style="width:20px;height:15px;padding:0;border:none;"></div>
+                                </div>
+                            </div>
+
                             <div id="corpo-painel-sagitario">
                                 <label style="font-size: 10px; color: #ccc;">SELECIONE O AEROPORTO:</label>
                                 <select id="sel-aeroporto-sagitario" style="width: 100%; background: #000; color: #00ffff; border: 1px solid #00ff66; padding: 4px; margin-top: 3px; font-family: Consolas, monospace; font-size: 12px; font-weight: bold; cursor: pointer;"></select>
@@ -505,12 +628,72 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="engrenagem-minimizada" style="display: none; cursor: pointer; font-size: 20px; text-align: center; background: rgba(18, 19, 19, 0.7); border: 1px solid rgba(0,255,102,0.4); padding: 5px; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.8); opacity: 0.8;" title="Maximizar Terminal ATC">⚙️</div>
                     `;
 
                     L.DomEvent.disableClickPropagation(div);
                     L.DomEvent.disableScrollPropagation(div);
 
                     setTimeout(function() {
+                        // LOGICA NOVA: Abre e Fecha o Menu de Configurações
+                        div.querySelector('#btn-cfg-sagitario').onclick = function() {
+                            var pCfg = div.querySelector('#cfg-painel-sagitario');
+                            var pMain = div.querySelector('#corpo-painel-sagitario');
+                            if (pCfg.style.display === 'none') {
+                                pCfg.style.display = 'block'; pMain.style.display = 'none';
+                            } else {
+                                pCfg.style.display = 'none'; pMain.style.display = 'block';
+                            }
+                        };
+
+                        // LOGICA NOVA: Controle de Opacidade do Mapa (Canvas e Tooltips)
+                        div.querySelector('#sag-opacity').oninput = function(e) {
+                            var val = e.target.value;
+                            var overlay = map.getPane('overlayPane');
+                            var tooltip = map.getPane('tooltipPane');
+                            if (overlay) overlay.style.opacity = val;
+                            if (tooltip) tooltip.style.opacity = val;
+                        };
+
+                        // LOGICA NOVA: Substituição de Cores ao Vivo (Busca e Troca)
+                        var colorPickers = div.querySelectorAll('input[type="color"]');
+                        colorPickers.forEach(function(picker) {
+                            picker.addEventListener('input', function(e) {
+                                var oldColor = this.getAttribute('data-cor-atual');
+                                var newColor = e.target.value;
+                                this.setAttribute('data-cor-atual', newColor);
+
+                                // Adiciona todos os grupos de camadas em uma lista de busca
+                                var gruposGerais = [layerFIR, layerTMA, layerSUA, layerHigh, layerLow, layerRunway, layerGeo, layerVOR, layerFixes];
+                                for (var ic in bancoProcedimentos) {
+                                    for (var tp in bancoProcedimentos[ic]) {
+                                        for (var pr in bancoProcedimentos[ic][tp]) {
+                                            gruposGerais.push(bancoProcedimentos[ic][tp][pr].layer);
+                                        }
+                                    }
+                                }
+                                
+                                // Varre e substitui a cor das linhas desenhadas e dos textos HTML
+                                gruposGerais.forEach(function(grupo) {
+                                    grupo.eachLayer(function(layer) {
+                                        if (layer.options && (layer.options.color === oldColor || layer.options.fillColor === oldColor)) {
+                                            layer.setStyle({ color: newColor, fillColor: newColor });
+                                            layer.options.color = newColor;
+                                            if (layer.options.fillColor) layer.options.fillColor = newColor;
+                                        }
+                                        if (layer.getTooltip && layer.getTooltip()) {
+                                            var tt = layer.getTooltip();
+                                            var content = tt.getContent();
+                                            if (typeof content === 'string' && content.indexOf(oldColor) !== -1) {
+                                                var reg = new RegExp(oldColor, 'gi');
+                                                tt.setContent(content.replace(reg, newColor));
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        });
+
                         var icaos = Object.keys(bancoProcedimentos).sort();
                         var selAero = div.querySelector('#sel-aeroporto-sagitario');
                         
@@ -618,9 +801,14 @@
 
                         var minimizado = false;
                         div.querySelector('#btn-min-sagitario').onclick = function() {
-                            minimizado = !minimizado;
-                            div.querySelector('#corpo-painel-sagitario').style.display = minimizado ? 'none' : 'block';
-                            this.textContent = minimizado ? '□' : '_';
+                            minimizado = true;
+                            div.querySelector('#painel-principal-sagitario').style.display = 'none';
+                            div.querySelector('#engrenagem-minimizada').style.display = 'block';
+                        };
+                        div.querySelector('#engrenagem-minimizada').onclick = function() {
+                            minimizado = false;
+                            div.querySelector('#painel-principal-sagitario').style.display = 'block';
+                            div.querySelector('#engrenagem-minimizada').style.display = 'none';
                         };
 
                         renderizarLista();
@@ -631,7 +819,7 @@
             });
 
             mapaNativo.addControl(new PainelTerminal());
-            console.log("[SAGITARIO] Roteamento Blindado de Camadas (Aerovias / TMA / VFR / SUA) carregado com sucesso!");
+            console.log("[SAGITARIO] Roteamento Blindado + Controle de Cores e Opacidade carregado com sucesso!");
             return true;
         }
         return false;
